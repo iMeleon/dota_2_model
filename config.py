@@ -1,7 +1,7 @@
 
 #workers = 1
 
-timeout = 30
+timeout = 120
 
 def post_fork(server, worker):
     server.log.info("Worker spawned (pid: %s)", worker.pid)
