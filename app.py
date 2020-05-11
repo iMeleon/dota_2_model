@@ -754,6 +754,13 @@ def make_stat(max_id):
     players = list(set([team_dict[team]['player{}'.format(p_id)] for p_id in range(1, 6) for team in team_dict]))
     pro_players = [player_dict[player] for player in players]
     new_dict = {players[idx]: player for idx, player in enumerate(pro_players)}
+    for player in new_dict:
+        dell = []
+        for version in new_dict[player]['heroes']:
+            if version != 131:
+                dell.append(version)
+        for version in dell:
+            del new_dict[player]['heroes'][version]
     main_dict['player_dict'] = new_dict
     main_dict['team_dict'] = team_dict
     main_dict['captain_dict'] = captain_dict
@@ -761,33 +768,23 @@ def make_stat(max_id):
     main_dict['max_id'] = max_id
     with open('main_dict.pickle', 'wb') as f2:
         pickle.dump(main_dict, f2)
-    with open('new_dict.pickle', 'wb') as f2:
-        pickle.dump(new_dict, f2)
-    with open('team_dict.pickle', 'wb') as f2:
-        pickle.dump(team_dict, f2)
-    with open('captain_dict.pickle', 'wb') as f2:
-        pickle.dump(captain_dict, f2)
-    with open('global_heroes.pickle', 'wb') as f2:
-        pickle.dump(global_heroes, f2)
-    with open('max_id.pickle', 'wb') as f2:
-        pickle.dump(max_id, f2)
+
 app = Flask(__name__)
 model = pickle.load(open('model.pickle', 'rb'))
-# main_dict = pickle.load(open('main_dict.pickle', 'rb'))
-# player_dict = main_dict['player_dict']
-# team_dict = main_dict['team_dict']
-# captain_dict = main_dict['captain_dict']
-# global_heroes = main_dict['global_heroes']
-# max_id = main_dict['max_id']
+main_dict = pickle.load(open('main_dict.pickle', 'rb'))
+player_dict = main_dict['player_dict']
+team_dict = main_dict['team_dict']
+captain_dict = main_dict['captain_dict']
+global_heroes = main_dict['global_heroes']
+max_id = main_dict['max_id']
 
-# player_dict = pickle.load(open('new_dict.pickle', 'rb'))
-# print(len(player_dict))
 
+#
 # player_dict = pickle.load(open('all_players_dict.pickle', 'rb'))
 # update_state(max_id)
 # make_stat(max_id)
 # player_dict = main_dict['player_dict']
-team_dict = pickle.load(open('team_dict.pickle', 'rb'))
+
 team_info = pd.DataFrame(team_dict).T
 print(len(team_info))
 @app.route('/predictbyname', methods=['GET'])
