@@ -763,19 +763,19 @@ def make_stat(max_id):
         pickle.dump(main_dict, f2)
 app = Flask(__name__)
 model = pickle.load(open('model.pickle', 'rb'))
-main_dict = pickle.load(open('main_dict.pickle', 'rb'))
-player_dict = main_dict['player_dict']
-team_dict = main_dict['team_dict']
-captain_dict = main_dict['captain_dict']
-global_heroes = main_dict['global_heroes']
-max_id = main_dict['max_id']
-print(len(player_dict))
+# main_dict = pickle.load(open('main_dict.pickle', 'rb'))
+# # player_dict = main_dict['player_dict']
+# # team_dict = main_dict['team_dict']
+# # captain_dict = main_dict['captain_dict']
+# # global_heroes = main_dict['global_heroes']
+# # max_id = main_dict['max_id']
+# # print(len(player_dict))
 # player_dict = pickle.load(open('all_players_dict.pickle', 'rb'))
 # update_state(max_id)
 # make_stat(max_id)
 # player_dict = main_dict['player_dict']
 
-team_info = pd.DataFrame(team_dict).T
+# team_info = pd.DataFrame(team_dict).T
 
 @app.route('/predictbyname', methods=['GET'])
 def get_tasks2():
