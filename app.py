@@ -83,8 +83,19 @@ class OpenDotaAPI():
 
 # r = requests.get('', headers={"Bearer":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJodHRwczovL3N0ZWFtY29tbXVuaXR5LmNvbS9vcGVuaWQvaWQvNzY1NjExOTgwMzMxODkxNDkiLCJ1bmlxdWVfbmFtZSI6Ik1lbGVvbiIsIlN1YmplY3QiOiIyZDVlMDI2Mi0wODI2LTQzMzItOWEzZi1kMzBlNWRiZmYyOTAiLCJTdGVhbUlkIjoiNzI5MjM0MjEiLCJuYmYiOjE1ODg0ODk3MTksImV4cCI6MTYyMDAyNTcxOSwiaWF0IjoxNTg4NDg5NzE5LCJpc3MiOiJodHRwczovL2FwaS5zdHJhdHouY29tIn0.5gaIgXxoJu3bPm_FGqcr8xfGUSsAHCiwysGQEEBxfL8"}), timeout= 20)
 
+team_names = {
+    'LGD.int': 7667517,
+    'OG': 2586976,
+    'BOOM ID': 7732977,
+    'Typhoon EC': 7099096,
+    'VG.P': 7422511,
+    'Keen Gaming.L': 7554790,
+    'Typhoon E-Sports Club': 7099096
+}
 def get_id_by_name(name1):
     id1 = None
+    if name1 in team_names:
+        return team_names[name1]
     name1 = name1.replace("-", "")
     name1 = name1.replace(" ", "")
     name1 = name1.replace(".", "")
@@ -93,32 +104,30 @@ def get_id_by_name(name1):
         if word in name1:
             name1 = name1.replace(word, "")
     team_info_new = team_info.sort_values(by='last_match_time', ascending=False)
-    if name1 == 'og':
-        id1 = 2586976
-    else:
-        for row in team_info_new.iterrows():
-            team_name = row[1]['name']
-            team_name = team_name.replace("-", "")
-            team_name = team_name.replace(".", "")
-            team_name = team_name.replace(" ", "")
-            team_name = team_name.lower().strip()
-            for word in ['team', 'gaming', '!']:
-                if word in team_name:
-                    team_name = team_name.replace(word, "")
-            team_tag = row[1]['tag']
-            team_tag = team_tag.replace("-", "")
-            team_tag = team_tag.replace(".", " ")
-            team_tag = team_tag.lower().strip()
-            # if row[1]['team_id'] ==7553952:
-            #     print(name1)
-            #     print(team_name )
-            if (name1 == team_name) or (name1 == team_tag):
+    for row in team_info_new.iterrows():
+        team_name = row[1]['name']
+        team_name = team_name.replace("-", "")
+        team_name = team_name.replace(".", "")
+        team_name = team_name.replace(" ", "")
+        team_name = team_name.lower().strip()
+        for word in ['team', 'gaming', '!']:
+            if word in team_name:
+                team_name = team_name.replace(word, "")
+        team_tag = row[1]['tag']
+        team_tag = team_tag.replace("-", "")
+        team_tag = team_tag.replace(".", "")
+        team_tag = team_tag.lower().strip()
+        # if row[1]['id'] ==15:
+        #     print(name1)
+        #     print(team_name )
+        #     print(team_tag)
+        if (name1 == team_name) or (name1 == team_tag):
+            id1 = row[1]['id']
+            break
+        else:
+            if (len(team_name) != 0) and (name1 == team_name.split()[0]):
                 id1 = row[1]['id']
                 break
-            else:
-                if (len(team_name) != 0) and (name1 == team_name.split()[0]):
-                    id1 = row[1]['id']
-                    break
 
     return id1
 
@@ -559,7 +568,7 @@ def update_state(max_id):
     public_matches_dict = {}
     counter = 0
     while True:
-        sleep(1)
+        sleep(7)
         to_add = sorted(list(set(ids) - set(public_matches_dict.keys())))
         if len(to_add) == 0:
             with open('public_matches_local.pickle', 'wb') as f2:
@@ -779,7 +788,7 @@ global_heroes = main_dict['global_heroes']
 max_id = main_dict['max_id']
 
 
-#
+
 # player_dict = pickle.load(open('all_players_dict.pickle', 'rb'))
 # update_state(max_id)
 # make_stat(max_id)
@@ -805,11 +814,11 @@ def get_tasks2():
     print(id1, id2)
     x1 = make_row(int(id1), int(id2))
     result = model.predict_proba(x1)
-
+    print(result)
     x2 = make_row(int(id2), int(id1))
 
     result2 = model.predict_proba(x2)
-
+    print(result2)
     resp = {'Team_1': (result[0][1] + result2[0][0]) / 2,
             'Team_2': (result[0][0] + result2[0][1]) / 2,
             'Name_1': team_info.loc[id1]['name'],
