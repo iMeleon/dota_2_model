@@ -568,7 +568,7 @@ def update_state(max_id):
     public_matches_dict = {}
     counter = 0
     while True:
-        sleep(7)
+        sleep(8)
         to_add = sorted(list(set(ids) - set(public_matches_dict.keys())))
         if len(to_add) == 0:
             with open('public_matches_local.pickle', 'wb') as f2:
@@ -593,7 +593,7 @@ def update_state(max_id):
     counter = 0
     pro_matches_dict = {}
     while True:
-        sleep(1)
+        sleep(8)
         to_add = sorted(list(set(ids) - set(pro_matches_dict.keys())))
         if len(to_add) == 0:
             with open('pro_matches_local.pickle', 'wb') as f2:
